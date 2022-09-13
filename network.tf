@@ -72,21 +72,18 @@ resource "aws_route_table" "main" {
   } 
 }
 
-
 resource "aws_route_table_association" "subnet1-assosciation" {
   subnet_id      = aws_subnet.public_subnet_1.id
   route_table_id = aws_route_table.main.id
 }
-
 
 resource "aws_route_table_association" "subnet2-assosciation" {
   subnet_id      = aws_subnet.public_subnet_2.id
   route_table_id = aws_route_table.main.id
 }
 
-
 resource "aws_eip" "eip_natgw_1" {
-  vpc = aws_vpc.main.id
+  vpc = true
 
   tags = {
     Name = "Elastic IP - For NAT GW 1"
@@ -94,16 +91,14 @@ resource "aws_eip" "eip_natgw_1" {
 
 }
 
-
 resource "aws_eip" "eip_natgw_2" {
-  vpc = aws_vpc.main.id
+  vpc = true
 
   tags = {
     Name = "Elastic IP - For NAT GW 2"
   }
 
 }
-
 
 resource "aws_nat_gateway" "natgw_1" {
   allocation_id = aws_eip.eip_natgw_1.id
