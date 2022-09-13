@@ -72,12 +72,12 @@ resource "aws_route_table" "main" {
   } 
 }
 
-resource "aws_route_table_association" "subnet1-assosciation" {
+resource "aws_route_table_association" "subnet1_assosciation" {
   subnet_id      = aws_subnet.public_subnet_1.id
   route_table_id = aws_route_table.main.id
 }
 
-resource "aws_route_table_association" "subnet2-assosciation" {
+resource "aws_route_table_association" "subnet2_assosciation" {
   subnet_id      = aws_subnet.public_subnet_2.id
   route_table_id = aws_route_table.main.id
 }
