@@ -72,6 +72,12 @@ resource "aws_route_table" "main" {
   } 
 }
 
+resource "aws_route" "internet_access" {
+  route_table_id         = aws_route_table.main.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.main.id
+}
+
 resource "aws_route_table_association" "subnet1_assosciation" {
   subnet_id      = aws_subnet.public_subnet_1.id
   route_table_id = aws_route_table.main.id
