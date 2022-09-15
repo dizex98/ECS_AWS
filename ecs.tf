@@ -6,12 +6,14 @@ resource "aws_ecs_task_definition" "task_def" {
   family                   = "hello-world-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
+  cpu                      = 1024
+  memory                   = 2048
   container_definitions = jsonencode([
     {
-      name      = "first"
-      image     = var.app_image
-      cpu       = var.fargate_cpu
-      memory    = var.fargate_memory
+      name      = "hello-world"
+      image     = "public.ecr.aws/c7l4l0y6/itay-hello-world:latest"
+      cpu       = 1024
+      memory    = 2048
       essential = true
       portMappings = [
         {
@@ -22,8 +24,8 @@ resource "aws_ecs_task_definition" "task_def" {
     }])
 }
 
-resource "aws_ecs_service" "test-service" {
-  name            = "testapp-service"
+resource "aws_ecs_service" "my-service" {
+  name            = "hello-world-service"
   cluster         = aws_ecs_cluster.my_cluster.id
   task_definition = aws_ecs_task_definition.task_def.arn
   desired_count   = var.app_count
@@ -31,13 +33,13 @@ resource "aws_ecs_service" "test-service" {
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_sg.id]
-    subnets          = aws_subnet.private.*.id
+    subnets          = [aws_subnet.private_subnet_1.id,aws_subnet.private_subnet_2.id]
     assign_public_ip = true
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.myapp-tg.arn
-    container_name   = "testapp"
+    target_group_arn = aws_alb_target_group.alb_tg.arn
+    container_name   = "hello-world"
     container_port   = var.app_port
   }
 
