@@ -1,6 +1,6 @@
 [
     {
-      "name": "test",
+      "name": "hello-world",
       "imageUri": "public.ecr.aws/c7l4l0y6/itay-hello-world:latest"
     }
   ]
