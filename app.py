@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def root():
-    return "Hello World! this is latest 3!!"
+    return "Hello World! this is latest!"
 
 
 if __name__ == "__main__":
