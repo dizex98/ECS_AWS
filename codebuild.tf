@@ -19,11 +19,7 @@ resource "aws_codebuild_project" "example" {
   source {
     type            = "GITHUB"
     location        = "https://github.com/dizex98/ECS_AWS.git"
-    git_clone_depth = 1
 
-    git_submodules_config {
-      fetch_submodules = true
-    }
   }
 
   source_version = "main"
