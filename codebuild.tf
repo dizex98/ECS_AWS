@@ -1,7 +1,6 @@
-resource "aws_codebuild_project" "example" {
+resource "aws_codebuild_project" "codebuild_project" {
   name          = "itay-hello-world"
-  description   = "codeBuild for my hello world project"
-  build_timeout = "5"
+  description   = "CodeBuild for my hello world project"
   service_role  = aws_iam_role.code_build_service_role.arn
 
   artifacts {
@@ -10,9 +9,10 @@ resource "aws_codebuild_project" "example" {
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:1.0"
+    image                       = "aws/codebuild/standard:4.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
+    privileged_mode             = true
 
   }
 
@@ -23,23 +23,6 @@ resource "aws_codebuild_project" "example" {
   }
 
   source_version = "main"
-
-#   cache {
-#     type     = "S3"
-#     location = aws_s3_bucket.example.bucket
-#   }
-
-#   logs_config {
-#     cloudwatch_logs {
-#       group_name  = "log-group"
-#       stream_name = "log-stream"
-#     }
-
-#     s3_logs {
-#       status   = "ENABLED"
-#       location = "${aws_s3_bucket.example.id}/build-log"
-#     }
-#  }
 
   tags = {
     Environment = "Test"
@@ -67,8 +50,9 @@ EOF
 
 resource "aws_iam_role_policy" "service_role_policy" {
   role = aws_iam_role.code_build_service_role.name
+  name        = "CodeBuildBasePolicy"
 
-# Here you can see the CodeBuild base policy and AmazonEC2ContainerRegistryFullAccess policy combined.
+# CodeBuild base policy and AmazonEC2ContainerRegistryFullAccess policy combined.Not relevant for now
   
   policy = <<POLICY
 {
@@ -111,30 +95,20 @@ resource "aws_iam_role_policy" "service_role_policy" {
         "Resource": [
             "arn:aws:codebuild:eu-north-1:753392824297:report-group/itay-hello-world-*"
         ]
-    },
-    {
-        "Effect": "Allow",
-        "Action": [
-            "ecr:*",
-            "cloudtrail:LookupEvents"
-        ],
-        "Resource": "*"
-    },
-    {
-        "Effect": "Allow",
-        "Action": [
-            "iam:CreateServiceLinkedRole"
-        ],
-        "Resource": "*",
-        "Condition": {
-            "StringEquals": {
-                "iam:AWSServiceName": [
-                    "replication.ecr.amazonaws.com"
-                ]
-            }
-        }
     }
     ]
 }
 POLICY
+}
+
+resource "aws_iam_policy_attachment" "ecr_attachment" {
+  name       = "ecr-attachment"
+  roles      = [aws_iam_role.code_build_service_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+}
+
+resource "aws_iam_policy_attachment" "ecr_attachment2" {
+  name       = "ecr-attachment2"
+  roles      = [aws_iam_role.code_build_service_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticContainerRegistryPublicFullAccess"
 }
