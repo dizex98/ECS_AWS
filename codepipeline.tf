@@ -1,3 +1,69 @@
+resource "aws_codepipeline" "codepipeline" {
+  name     = "itay-codepipeline"
+  role_arn = aws_iam_role.codepipeline_role.arn
+
+  artifact_store {
+    location = "itay-codepipeline-bucket"
+    type     = "S3"
+  }
+
+  stage {
+    name = "Source"
+
+    action {
+      name             = "Source"
+      category         = "Source"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
+      version          = "1"
+      output_artifacts = ["source_output"]
+
+      configuration = {
+        ConnectionArn    = "arn:aws:codestar-connections:us-east-1:753392824297:connection/a79bf967-432f-407d-8fa1-336541b46300"
+        FullRepositoryId = "dizex98/ECS_AWS"
+        BranchName       = "main"
+      }
+    }
+  }
+
+  stage {
+    name = "Build"
+
+    action {
+      name             = "Build"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_output"]
+      output_artifacts = ["build_output"]
+      version          = "1"
+
+      configuration = {
+        ProjectName = "itay-hello-world"
+      }
+    }
+  }
+
+  stage {
+    name = "Deploy"
+
+    action {
+      name            = "Deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "ECS"
+      input_artifacts = ["build_output"]
+      version         = "1"
+
+      configuration = {
+        ClusterName = aws_ecs_cluster.my_cluster.name
+        ServiceName = aws_ecs_service.my-service.name
+        FileName    = "imagedefinitions.json"
+      }
+    }
+  }
+}
+
 resource "aws_iam_role" "codepipeline_role" {
   name = "codepipeline-role"
 
@@ -17,7 +83,7 @@ resource "aws_iam_role" "codepipeline_role" {
 EOF
 }
 
-esource "aws_iam_role_policy" "codepipeline_policy" {
+resource "aws_iam_role_policy" "codepipeline_policy" {
   name = "codepipeline_policy"
   role = aws_iam_role.codepipeline_role.id
 
