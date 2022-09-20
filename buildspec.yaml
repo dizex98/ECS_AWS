@@ -8,7 +8,7 @@ phases:
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/c7l4l0y6
       - REPOSITORY_URI=public.ecr.aws/c7l4l0y6/itay-hello-world
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=1
+      - IMAGE_TAG=2
   build:
     commands:
       - echo Build started on `date`
