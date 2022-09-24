@@ -24,7 +24,7 @@ resource "aws_ecs_task_definition" "task_def" {
     }])
 }
 
-resource "aws_ecs_service" "my-service" {
+resource "aws_ecs_service" "my_service" {
   name            = "hello-world-service"
   cluster         = aws_ecs_cluster.my_cluster.id
   task_definition = aws_ecs_task_definition.task_def.arn

@@ -5,7 +5,6 @@ resource "aws_eip" "eip_natgw_1" {
   tags = {
     Name = "Elastic IP - For NAT GW 1"
   }
-
 }
 
 resource "aws_eip" "eip_natgw_2" {
@@ -14,7 +13,6 @@ resource "aws_eip" "eip_natgw_2" {
   tags = {
     Name = "Elastic IP - For NAT GW 2"
   }
-
 }
 
 resource "aws_nat_gateway" "natgw_1" {

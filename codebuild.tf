@@ -51,8 +51,6 @@ EOF
 resource "aws_iam_role_policy" "service_role_policy" {
   role = aws_iam_role.code_build_service_role.name
   name        = "CodeBuildBasePolicy"
-
-# CodeBuild base policy and AmazonEC2ContainerRegistryFullAccess policy combined.Not relevant for now
   
   policy = <<POLICY
 {

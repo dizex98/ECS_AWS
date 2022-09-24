@@ -57,7 +57,7 @@ resource "aws_codepipeline" "codepipeline" {
 
       configuration = {
         ClusterName = aws_ecs_cluster.my_cluster.name
-        ServiceName = aws_ecs_service.my-service.name
+        ServiceName = aws_ecs_service.my_service.name
         FileName    = "imagedefinitions.json"
       }
     }
