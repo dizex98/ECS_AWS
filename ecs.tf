@@ -43,5 +43,4 @@ resource "aws_ecs_service" "my_service" {
     container_port   = var.app_port
   }
 
-  # depends_on = [aws_alb_listener.testapp, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
